@@ -1,7 +1,8 @@
 HELP.md
 /target/
 !.mvn/wrapper/maven-wrapper.jar
-
+/src/mian/resource/application.properties
+/logs/
 ### STS ###
 .apt_generated
 .classpath
@@ -16,6 +17,7 @@ HELP.md
 *.iws
 *.iml
 *.ipr
+
 
 ### NetBeans ###
 /nbproject/private/
