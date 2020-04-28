@@ -3,7 +3,7 @@ package com.nowcoder.community.entity;
 import java.util.Date;
 
 //发帖表
-public class DisscussPost {
+public class DiscussPost {
 
     private int id;
     private int userId;
@@ -89,7 +89,7 @@ public class DisscussPost {
 
     @Override
     public String toString() {
-        return "DisscussPost{" +
+        return "DiscussPost{" +
                 "id=" + id +
                 ", userId=" + userId +
                 ", title='" + title + '\'' +

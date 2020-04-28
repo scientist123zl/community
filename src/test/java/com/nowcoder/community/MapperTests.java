@@ -1,10 +1,9 @@
 package com.nowcoder.community;
 
-import com.nowcoder.community.controller.LoginController;
 import com.nowcoder.community.dao.DiscussPostMapper;
 import com.nowcoder.community.dao.LoginTicketMapper;
 import com.nowcoder.community.dao.UserMapper;
-import com.nowcoder.community.entity.DisscussPost;
+import com.nowcoder.community.entity.DiscussPost;
 import com.nowcoder.community.entity.LoginTicket;
 import com.nowcoder.community.entity.User;
 import org.junit.Test;
@@ -72,9 +71,9 @@ public class MapperTests {
 
     @Test
     public void testSelectPosts(){
-        List<DisscussPost> list = discussPostMapper.selectDiscussPosts(0, 0, 10);
-        for (DisscussPost disscussPost : list) {
-            System.out.println(disscussPost);
+        List<DiscussPost> list = discussPostMapper.selectDiscussPosts(0, 0, 10);
+        for (DiscussPost discussPost : list) {
+            System.out.println(discussPost);
         }
         System.out.println(discussPostMapper.selectDiscussPostRows(149));
     }
