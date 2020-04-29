@@ -74,6 +74,7 @@
 - 示例，使用jQuery发送AJAX请求 `pom-fastjson  CommunityUtil(getJSONString main)   ajax-demo.html   alphaController(testAjax)` 
 - 采用AJAX请求，实现发布帖子的功能 `DiscussPostController(addDiscussPost)  js/index.js`
 `DiscussPostMapper(insertDiscussPost) DiscussPostService` 
+`在不重新加载页面的情况下发送请求给服务器。接受并使用从服务器发来的数据,更新页面。`
 
 #### 3.3帖子详情
 `DiscussPostMapper(selectDiscussPostById) DiscussPostService DiscussPostController(/detail/{discussPostId})`
@@ -85,6 +86,27 @@
 - 通过TransactionTemplate管理事务
 ` AlphaService(save1、save2) TransactionTests`
 
+#### 3.5 显示评论
+-  数据层
+  - 根据实体查询一页评论数据。`CommentMapper(selectCommentsByEntity、selectCountByEntity)`
+  - 根据实体查询评论的数量。
+- 业务层
+  - 处理查询评论的业务。 `CommentService`
+  - 处理查询评论数量的业务。
+- 表现层
+  - 显示帖子详情数据时，同时显示该帖子所有的评论数据。 **`DiscussPostController(/detail/{discussPostId})`**
+
+#### 3.6增加评论
+- 数据层
+  - 增加评论数据。`CommentMapper(insertComment)`
+  - 修改帖子的评论数量。 `DiscussPostMapper(updateCommentCount）`
+- 业务层
+  - 处理添加评论的业务。 `CommentService(addComment)`
+  - 先增加评论、再更新帖子的评论数量。 `DiscussPostMapper(updateCommentCount)`
+- 表现层
+  - 处理添加评论数据的请求。 `CommentController(/add/{discussPostId}`
+  - 设置添加评论的表单。
+  
 ```sql
 用户表
 CREATE TABLE `user` (
@@ -131,6 +153,23 @@ CREATE TABLE `login_ticket` (
   PRIMARY KEY (`id`),
   KEY `index_ticket` (`ticket`(20))
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+```
+
+```sql
+帖子评论表
+CREATE TABLE `comment` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) DEFAULT NULL COMMENT '评论的发布人',
+  `entity_type` int(11) DEFAULT NULL COMMENT '评论类型 1-评论帖子 2-二级评论',
+  `entity_id` int(11) DEFAULT NULL COMMENT '评论针对的帖子id',
+  `target_id` int(11) DEFAULT NULL COMMENT '二级评论 @haha 指向的用户id',
+  `content` text,
+  `status` int(11) DEFAULT NULL,
+  `create_time` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `index_user_id` (`user_id`),
+  KEY `index_entity_id` (`entity_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=232 DEFAULT CHARSET=utf8;
 ```
 
 
