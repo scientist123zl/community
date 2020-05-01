@@ -106,6 +106,22 @@
 - 表现层
   - 处理添加评论数据的请求。 `CommentController(/add/{discussPostId}`
   - 设置添加评论的表单。
+
+#### 3.7私信列表
+- 私信列表
+  - 查询当前用户的会话列表，支持分页显示。 `MessageController(getLetterList)`
+  - 每个会话只显示一条最新的私信。 `letter.html(私信列表)`
+- 私信详情
+  - 查询某个会话所包含的私信。 支持分页显示。`MessageController(getLetterDetail)`
+`MessageMapper 前5方法   letter-detail.html(私信列表)`
+
+#### 3.8发送私信
+- 发送私信
+  - 采用异步的方式发送私信。 `MessageMapper(insertMessage) MessageController(sendLetter)`
+  - 发送成功后刷新私信列表。 
+- 设置已读
+  - 访问私信详情时，将显示的私信设置为已读状态。` MessageMapper(updateStatus)` `MessageController(getLetterDetail)` 
+**`letter.js`**  `letter.html/letter-detail.html(弹出框sendModal)`  
   
 ```sql
 用户表
@@ -171,5 +187,23 @@ CREATE TABLE `comment` (
   KEY `index_entity_id` (`entity_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=232 DEFAULT CHARSET=utf8;
 ```
+```sql
+私信表 conversation_id为一次会话的id，一个会话有多条私信
+CREATE TABLE `message` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `from_id` int(11) DEFAULT NULL  COMMENT '为1时表示系统发的通知，而不是私信;',
+  `to_id` int(11) DEFAULT NULL,
+  `conversation_id` varchar(45) NOT NULL COMMENT '111_122 为from_id和to_id拼接，且小id在前，因为是一个会话',
+  `content` text,
+  `status` int(11) DEFAULT NULL COMMENT '0-未读;1-已读;2-删除;',
+  `create_time` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `index_from_id` (`from_id`),
+  KEY `index_to_id` (`to_id`),
+  KEY `index_conversation_id` (`conversation_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=355 DEFAULT CHARSET=utf8;
+
+```
+
 
 
