@@ -21,7 +21,7 @@ public interface LoginTicketMapper {
     })
     LoginTicket selectByTicket(String ticket);
 
-    //通过ticket更新登录状态
+    //通过ticket更新登录状态  动态sql <script>标签表示为一个脚本  <if>字标签
     @Update({
             "<script>",
             "update login_ticket set status=#{status} where ticket=#{ticket} ",

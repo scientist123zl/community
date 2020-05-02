@@ -13,7 +13,7 @@ public interface DiscussPostMapper {
     List<DiscussPost> selectDiscussPosts(int userId, int offset, int limit);
 
     //查询帖子条数
-    //@Param注解用于给参数取别名，住过只有一个参数，并且在<if>中使用，则必须加别名（即userId为0或其他时，动态操作)
+    //@Param注解用于给参数取别名，如果只有一个参数，并且在<if>中使用，则必须加别名（即userId为0或其他时，动态操作)
     int selectDiscussPostRows(@Param("userId") int userId);
 
 
@@ -22,7 +22,7 @@ public interface DiscussPostMapper {
     //查询帖子的详情
     DiscussPost selectDiscussPostById(int id);
 
-    //增加帖子数量
+    //增加帖子评论数量
     int updateCommentCount(int id, int commentCount);
 
 

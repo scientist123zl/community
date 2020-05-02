@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Properties;
 
 @Configuration
-public class KaptcahConfig {
+public class KaptchaConfig {
 
     @Bean
     public Producer KaptchaProducer(){
