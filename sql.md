@@ -226,9 +226,29 @@ hash
 - 以用户为key，记录点赞数量
 - increment(key)，decrement(key) • 开发个人主页
 - 以用户为key，查询点赞数量
-`RedisKeyUtil getUserLikeKey UserController(getProfilePage) profile.html`
+`RedisKeyUtil(getEntityLikeKey、getUserLikeKey) UserController(getProfilePage) profile.html`
 
+#### 4.5关注、取消关注
+- A关注了B，则A是B的Follower（粉丝），B是A的Followee（目标） `RedisKeyUtil(getFolloweeKey、getFollowerKey)`
+- 统计用户的关注数、粉丝数 `FollowService(follow、unfollow findFolloweeCount findFollowerCount hasFollowed)`
+`profile.js UserController FollowController profile.html`
 
+#### 4.6关注列表、粉丝列表
+- 查询某个用户关注的人，支持分页 
+- 查询某个用户的粉丝，支持分页
+`FollowService（findFollowees、findFollowers） FollowController  followee.html follower.html`
+
+#### 4.7redis优化登录模块
+- 使用Redis存储验证码
+  - 验证码需要频繁的访问与刷新，对性能要求较高。
+  - 验证码不需永久保存，通常在很短的时间后就会失效。
+  - 分布式部署时，存在Session共享的问题。 `LoginController(/kaptcha、/login）`
+- 使用Redis存储登录凭证
+  - 处理每次请求时，都要查询用户的登录凭证，访问的频率非常高。`UserService login`
+- 使用Redis缓存用户信息
+  - 处理每次请求时，都要根据凭证查询用户信息，访问的频率非常高。`UserService initCache getCache`
+`RedisKeyUtil(getKaptchaKey、getTicketKey、getUserKey)  LoginTicketMapper@Deprecated`
+  
 ```sql
 用户表
 CREATE TABLE `user` (
