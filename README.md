@@ -4,6 +4,7 @@
 - SpringBoot
 - redis
 - kafka
+- Elasticsearch
 
 ## 资料
 [Spring 文档](https://spring.io/guides)    
@@ -13,7 +14,9 @@
 [logback文档](http://logback.qos.ch/manual/architecture.html)
 [生成验证码Kaptcha](http://code.google.com/archive/p/kaptcha/)
 [ajax异步刷新3.2](https://developer.mozilla.org/zh-CN/docs/Web/guide/AJAX)
-[redis](https://redis.io/commands)
+[redis4.1](https://redis.io/commands)
+[Kfaka5.1](http://kafka.apache.org/quickstart)
+[Elasticserarch6.1](https://www.elastic.co/cn)
 
 
 

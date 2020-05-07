@@ -1,90 +1,3 @@
-```
-字符串(strings)、哈希(hashes)、列表(lists)、集合(sets)、有序集合(sorted sets)
-127.0.0.1:6379> flushdb                                                                                                 
-OK
-127.0.0.1:6379> set test:count 1                                                                                        
-OK
-127.0.0.1:6379> get test:count                                                                                          
-"1"
-127.0.0.1:6379> incr test:count                                                                                         
-(integer) 2
-127.0.0.1:6379> decr test:count                                                                                         
-(integer) 1
-127.0.0.1:6379> hset test:user id 1                                                                                     
-(integer) 1
-127.0.0.1:6379> hset test:user username zhangsan                                                                        
-(integer) 1                                                                                    
-127.0.0.1:6379> hget test:user username                                                                                 
-"zhangsan"
-127.0.0.1:6379> lpush test:ids 101 102 103                                                                              
-(integer) 3
-127.0.0.1:6379> llen test:ids                                                                                           
-(integer) 3
-127.0.0.1:6379> lindex test:ids 0
-"103"
-127.0.0.1:6379> lindex test:ids 2
-"101"
-127.0.0.1:6379> lrange test:ids 0 2
-1) "103"
-2) "102"
-3) "101"
-127.0.0.1:6379> rpop test:ids
-"101"
-127.0.0.1:6379> rpop test:ids
-"102"
-127.0.0.1:6379> sadd test:teachers aaa bbb ccc ddd eee
-(integer) 5
-127.0.0.1:6379> scard test:teachers
-(integer) 5
-127.0.0.1:6379> spop test:teachers
-"eee"
-127.0.0.1:6379> spop test:teachers
-"bbb"
-127.0.0.1:6379> smembers test:teachers
-1) "aaa"
-2) "ccc"
-3) "ddd"
-127.0.0.1:6379> zadd test:stus 10 aaa 20 bbb 30 ccc 40 ddd 50 eee
-(integer) 5
-
-127.0.0.1:6379> zcard test:stus
-(integer) 5
-127.0.0.1:6379> zscore test:stus ccc
-"30"
-127.0.0.1:6379> zrank test:stus ccc
-(integer) 2
-127.0.0.1:6379> zrange test:stus 0 2
-1) "aaa"
-2) "bbb"
-3) "ccc"
-127.0.0.1:6379> keys *                                                                                                  
-1) "test:stus"
-2) "test:user"
-3) "test:ids"
-4) "test:teachers"
-5) "test:students"
-6) "test:count"
-127.0.0.1:6379> type test:user                                                                                          
-hash
-127.0.0.1:6379> del test:students                                                                                       
-(integer) 1
-127.0.0.1:6379> exists test:students                                                                                    
-(integer) 0
-127.0.0.1:6379> expire test:user 10                                                                                     
-(integer) 1
-127.0.0.1:6379> keys *
-1) "test:stus"
-2) "test:user"
-3) "test:ids"
-4) "test:teachers"
-5) "test:count"
-127.0.0.1:6379> keys *
-1) "test:stus"
-2) "test:ids"
-3) "test:teachers"
-4) "test:count"
-```
-
 #### 1.1开发社区首页
 - 开发社区首页，显示前10个帖子
 - 开发分页组件，分页显示所有的帖子
@@ -219,7 +132,7 @@ hash
 - 详情页点赞数量
 - 统计点赞数量
 - 显示点赞状态
-`RedisKeyUtil getEntityLikeKey  LikeService LikeController  disuss-detail.html（点赞部分） discuss.js`
+`RedisKeyUtil  LikeService LikeController  disuss-detail.html（点赞部分） discuss.js`
 
 #### 4.4我收到的赞
 - 重构点赞功能
@@ -248,7 +161,28 @@ hash
 - 使用Redis缓存用户信息
   - 处理每次请求时，都要根据凭证查询用户信息，访问的频率非常高。`UserService initCache getCache`
 `RedisKeyUtil(getKaptchaKey、getTicketKey、getUserKey)  LoginTicketMapper@Deprecated`
+ 
+#### 5.1-3阻塞队列、Kafka入门 及spring整合Kafka
+ `kafkaProperties` `BlockingQueueTests` `KafkaTests` 
+ `pom spring-kafka`
+ 
+#### 5.4发送系统通知
+- 触发事件
+  - 评论后，发布通知  `CommentController`
+  - 点赞后，发布通知  `LikeController`
+  - 关注后，发布通知  `FollowController`
+- 处理事件 
+  - 封装事件对象      `entity/Event`
+  - 开发事件的生产者   `event/EventProducer`
+  - 开发事件的消费者   `event/EventConsumer`
   
+#### 5.5显示系统通知  
+- 通知列表    `MessageMapper(selectLatestNotice、selectNoticeCount、selectNoticeUnreadCount、selectNotices)`
+  - 显示评论、点赞、关注三种类型的通知 `MessageController(getNoticeList) notice.html`
+- 通知详情
+  - 分页显示某一类主题所包含的通知  `MessageController(getNoticeDetail) notice-detail.html`
+- 未读消息
+  - 在页面头部显示所有的未读消息数  `MessageInterceptor WebMvcConfig拦截请求 inex.html添加消息总数量`
 ```sql
 用户表
 CREATE TABLE `user` (
@@ -331,5 +265,167 @@ CREATE TABLE `message` (
 
 ```
 
+```text
+reids-server
+redis-cli
+字符串(strings)、哈希(hashes)、列表(lists)、集合(sets)、有序集合(sorted sets)
+127.0.0.1:6379> flushdb                                                                                                 
+OK
+127.0.0.1:6379> set test:count 1                                                                                        
+OK
+127.0.0.1:6379> get test:count                                                                                          
+"1"
+127.0.0.1:6379> incr test:count                                                                                         
+(integer) 2
+127.0.0.1:6379> decr test:count                                                                                         
+(integer) 1
+127.0.0.1:6379> hset test:user id 1                                                                                     
+(integer) 1
+127.0.0.1:6379> hset test:user username zhangsan                                                                        
+(integer) 1                                                                                    
+127.0.0.1:6379> hget test:user username                                                                                 
+"zhangsan"
+127.0.0.1:6379> lpush test:ids 101 102 103                                                                              
+(integer) 3
+127.0.0.1:6379> llen test:ids                                                                                           
+(integer) 3
+127.0.0.1:6379> lindex test:ids 0
+"103"
+127.0.0.1:6379> lindex test:ids 2
+"101"
+127.0.0.1:6379> lrange test:ids 0 2
+1) "103"
+2) "102"
+3) "101"
+127.0.0.1:6379> rpop test:ids
+"101"
+127.0.0.1:6379> rpop test:ids
+"102"
+127.0.0.1:6379> sadd test:teachers aaa bbb ccc ddd eee
+(integer) 5
+127.0.0.1:6379> scard test:teachers
+(integer) 5
+127.0.0.1:6379> spop test:teachers
+"eee"
+127.0.0.1:6379> spop test:teachers
+"bbb"
+127.0.0.1:6379> smembers test:teachers
+1) "aaa"
+2) "ccc"
+3) "ddd"
+127.0.0.1:6379> zadd test:stus 10 aaa 20 bbb 30 ccc 40 ddd 50 eee
+(integer) 5
+
+127.0.0.1:6379> zcard test:stus
+(integer) 5
+127.0.0.1:6379> zscore test:stus ccc
+"30"
+127.0.0.1:6379> zrank test:stus ccc
+(integer) 2
+127.0.0.1:6379> zrange test:stus 0 2
+1) "aaa"
+2) "bbb"
+3) "ccc"
+127.0.0.1:6379> keys *                                                                                                  
+1) "test:stus"
+2) "test:user"
+3) "test:ids"
+4) "test:teachers"
+5) "test:students"
+6) "test:count"
+127.0.0.1:6379> type test:user                                                                                          
+hash
+127.0.0.1:6379> del test:students                                                                                       
+(integer) 1
+127.0.0.1:6379> exists test:students                                                                                    
+(integer) 0
+127.0.0.1:6379> expire test:user 10                                                                                     
+(integer) 1
+127.0.0.1:6379> keys *
+1) "test:stus"
+2) "test:user"
+3) "test:ids"
+4) "test:teachers"
+5) "test:count"
+127.0.0.1:6379> keys *
+1) "test:stus"
+2) "test:ids"
+3) "test:teachers"
+4) "test:count"
+```
+
+
+```text
+C:\Users\26033>e:
+E:\>cd E:\kafka_2.12-2.5.0
+E:\kafka_2.12-2.5.0>bin\windows\zookeeper-server-start.bat config\zookeeper.properties
+
+C:\Users\26033>e:
+E:\>cd E:\kafka_2.12-2.5.0
+E:\kafka_2.12-2.5.0>bin\windows\kafka-server-start.bat config\server.properties
+
+E:\>cd E:\kafka_2.12-2.5.0\bin\windows
+E:\kafka_2.12-2.5.0\bin\windows>kafka-topics.bat --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic test
+E:\kafka_2.12-2.5.0\bin\windows>kafka-topics.bat --list --bootstrap-server localhost:9092
+test
+E:\kafka_2.12-2.5.0\bin\windows>kafka-console-producer.bat --broker-list localhost:9092 --topic test
+>hello
+>world
+>how are you
+
+E:\>cd e:kafka_2.12-2.5.0\bin\windows
+E:\kafka_2.12-2.5.0\bin\windows>kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic test --from-beginning
+hello
+world
+how are you
+```
+```text
+双击E:\elasticsearch-6.4.3\bin 下的elasticsearch.bat
+
+curl -X GET "localhost:9200/_cat/health?v"  查看集群健康状态 GREEN为健康
+curl -X GET "localhost:9200/_cat/nodes?v"   查看集群中的节点
+curl -X GET "localhost:9200/_cat/indices?v" 查看索引
+curl -X PUT "localhost:9200/test"           创建名为test的索引
+curl -X DELETE "localhost:9200/test"        删除名为test的索引
+
+用postman
+get localhost:9200/_cat/indices?v  查看索引
+put loaclhost:9200/test            创建名为test的索引
+delete localhost:9200/test         删除名为test的索引
+put localhost:9200/test/_doc/1     test为索引，_doc占位符不管 1为id  增加数据
+body raw json
+{
+	"title":"hello",
+	"content":"How are you"
+}
+
+get localhost:9200/test/_doc/1    查询数据
+{
+	"_index": "test",
+	"_type": "_doc",
+	"_id": "1",
+	"_version": 1,
+	"found": true,
+	"_source": {
+		"title": "hello",
+		"content": "How are you"
+	}
+}
+delete localhost:9200/test/_doc/1  删除数据
+
+get localhost:9200/test/_search?q=title:互联网      搜索标题带有互联网的数据
+get localhost:9200/test/_search?q=content:运营实习  搜索内容为运营实习（分词为运营+实习）的数据
+
+get localhost:9200/test/_search                    搜索
+body raw json
+{
+	"query":{
+		"multi_match":{
+			"query":"互联网",
+			"fields":["title","content"]
+		}
+	}
+}
+```
 
 
