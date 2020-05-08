@@ -168,9 +168,9 @@
  
 #### 5.4发送系统通知
 - 触发事件
-  - 评论后，发布通知  `CommentController`
-  - 点赞后，发布通知  `LikeController`
-  - 关注后，发布通知  `FollowController`
+  - 评论后，发布通知  `CommentController 触发评论事件`
+  - 点赞后，发布通知  `LikeController 触发点赞事件`
+  - 关注后，发布通知  `FollowController 触发关注事件`
 - 处理事件 
   - 封装事件对象      `entity/Event`
   - 开发事件的生产者   `event/EventProducer`
@@ -183,6 +183,28 @@
   - 分页显示某一类主题所包含的通知  `MessageController(getNoticeDetail) notice-detail.html`
 - 未读消息
   - 在页面头部显示所有的未读消息数  `MessageInterceptor WebMvcConfig拦截请求 inex.html添加消息总数量`
+  
+#### 6.1-2 elasticsearch
+- 引入依赖
+  - pom spring-boot-starter-data-elasticsearch
+- 配置Elasticsearch      (ElasticsearchProperties  cluster-name、cluster-nodes)
+- Spring Data Elasticsearch   `DiscussPost @Document(indexName = "discusspost"...`
+  - ElasticsearchTemplate
+  - ElasticsearchRepository   
+`dao.elasticsearch.DiscussPostRepository  ElasticsearchTests`
+
+#### 6.3开发社区搜索功能
+- 搜索服务 业务层
+  - 将帖子保存至Elasticsearch服务器。  `ElasticsearchService`
+  - 从Elasticsearch服务器删除帖子。
+  - 从Elasticsearch服务器搜索帖子。
+- 发布事件 表现层
+  - 发布帖子时，将帖子异步的提交到Elasticsearch服务器。 `DiscussPostController(add 触发发帖事件)`
+  - 增加评论时，将帖子异步的提交到Elasticsearch服务器。 `CommentController(addComment 触发发帖事件)`
+  - 在消费组件中增加一个方法，消费帖子发布事件。         `EventConsumer 消费发帖事件`
+-  显示结果
+  - 在控制器中处理搜索请求，在HTML上显示搜索结果。        `SearchController  index.html表头复用 search.html`
+        
 ```sql
 用户表
 CREATE TABLE `user` (

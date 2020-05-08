@@ -5,6 +5,7 @@
 - redis
 - kafka
 - Elasticsearch
+- SpringSecurity
 
 ## 资料
 [Spring 文档](https://spring.io/guides)    
@@ -17,6 +18,7 @@
 [redis4.1](https://redis.io/commands)
 [Kfaka5.1](http://kafka.apache.org/quickstart)
 [Elasticserarch6.1](https://www.elastic.co/cn)
+[Spring Security教程](http://www.spring4all.com/)
 
 
 
