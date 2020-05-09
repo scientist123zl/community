@@ -204,7 +204,28 @@
   - 在消费组件中增加一个方法，消费帖子发布事件。         `EventConsumer 消费发帖事件`
 -  显示结果
   - 在控制器中处理搜索请求，在HTML上显示搜索结果。        `SearchController  index.html表头复用 search.html`
-        
+
+#### 7.1-7.2 Spring Security权限管理
+- 登录检查
+  - 之前使用拦截器实现了登录检查，这是简单的权限管理方案，现在将其废弃 `WebMvcConfig去掉loginRequiredInterceptor`
+- 权限配置
+  - 对当前系统内包含的所有请求，分配访问权限（普通用户、版主、管理员） `SecurityConfig`
+- 认证方案
+  - 绕过Security,采用系统原来的认证方案 `UserService(getAuthorities)--> LoginTicketInteceptor(SecurityContextHolder)-->loginController(logout)`
+- csrf配置
+  - 防止crsf,攻击的基本原理，以及表单、AJAX相关配置    
+  
+#### 7.3置顶、加精、删除
+- 功能实现
+  - 点击置顶，修改帖子的类型   `DiscussPostMapper(updateType、updateStatus)`
+  - 点击加精、删除，修改帖子状态
+- 权限管理
+  - 版主可执行置顶、加精操作   `DiscussPostController(setTop、setWonderful、setDelete)`
+  - 管理员可执行删除操作       `EventConsumer消费删贴事件`
+- 按钮显示
+  - 版主可以看到置顶、加精按钮  `Thymeleaf+SpringSecurity discuss-detail.html对置顶加精删除按钮的处理`
+  - 管理员可以看到删除按钮      `discuss.js`
+  
 ```sql
 用户表
 CREATE TABLE `user` (
