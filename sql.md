@@ -225,6 +225,21 @@
 - 按钮显示
   - 版主可以看到置顶、加精按钮  `Thymeleaf+SpringSecurity discuss-detail.html对置顶加精删除按钮的处理`
   - 管理员可以看到删除按钮      `discuss.js`
+
+#### 7.4Redis高级数据类型  
+- HyperLogLog   高级不精确去重的数据结构   `RedisTests`
+- Bitmap        byte数组，适合存储大量连续的数据的布尔值  010100010100111  
+
+#### 7.5网站数据统计
+- UV(Unique Visitor)
+  - 独立访客，需要通过用户IP排重统计数据
+  - 每次独立访问都要进行统计
+  - HyperLogLog,性能好，且存储空间小
+- DAU(Daily Active User)
+  - 日活跃用户，需通过用户ID排重统计数据
+  - 访问过一次，则认为其活跃
+  - Bitmap,性能好，且可统计精确结果
+`RedisKeyUtil DataService DataController DataInteceptor WebMvcConfig->securityConfig`  
   
 ```sql
 用户表
