@@ -10,7 +10,7 @@ import java.util.List;
 public interface DiscussPostMapper {
 
     //userId为空时，即首页显示全部帖子，userId有值时，显示个人主页
-    List<DiscussPost> selectDiscussPosts(int userId, int offset, int limit);
+    List<DiscussPost> selectDiscussPosts(int userId, int offset, int limit, int orderMode);
 
     //查询帖子条数
     //@Param注解用于给参数取别名，如果只有一个参数，并且在<if>中使用，则必须加别名（即userId为0或其他时，动态操作)
@@ -30,6 +30,9 @@ public interface DiscussPostMapper {
 
     //删除帖子
     int updateStatus(int id,int status);
+
+    //更新帖子分数
+    int updateScore(int id,double score);
 
 
 

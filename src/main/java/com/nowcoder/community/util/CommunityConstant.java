@@ -67,6 +67,11 @@ public interface CommunityConstant {
     String TOPIC_DELETE = "delete";
 
     /**
+     * 主题：生成长图  分享
+     */
+    String TOPIC_SHARE = "share";
+
+    /**
      * 系统默认id
      */
     int SYSTEM_USER_ID = 1;

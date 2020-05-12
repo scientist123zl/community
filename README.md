@@ -6,6 +6,7 @@
 - kafka
 - Elasticsearch
 - SpringSecurity
+- Spring Quartz
 
 ## 资料
 [Spring 文档](https://spring.io/guides)    
@@ -18,7 +19,9 @@
 [redis4.1](https://redis.io/commands)
 [Kfaka5.1](http://kafka.apache.org/quickstart)
 [Elasticserarch6.1](https://www.elastic.co/cn)
-[Spring Security教程](http://www.spring4all.com/)
+[Spring Security教程7.1](http://www.spring4all.com/)
+[Spring Quartz分布式定时任务7.6](http://www.quartz-scheduler.org/)
+[生成长图7.8](https://wkhtmltopdf.org/)
 
 
 

@@ -240,7 +240,30 @@
   - 访问过一次，则认为其活跃
   - Bitmap,性能好，且可统计精确结果
 `RedisKeyUtil DataService DataController DataInteceptor WebMvcConfig->securityConfig`  
+
+#### 7.6任务执行和调度（线程池） 
+- JDK线程池
+  - ExecutorService        `ThreadPoolTests`
+  - ScheduledExecutorService
+- Spring线程池
+  - ThreadPoolTaskExecutor 
+  - ThreadPoolTaskScheduler
+- 分布式定时任务
+  - Spring Quartz `pom spring-boot-starter-quartz` `QuartzProperties`
+  `quartz/AlphaJob` `QuartzConfig` 
   
+#### 7.7热帖排序
+- log(精华分+评论数*10+点赞数*2+收藏数*2)+（分布时间-牛客纪元）
+- 重构DiscussPostMapper(selectDiscussPosts)、DiscussPostService(findDiscussPosts)、HomeController  
+其实就是加入orderMode默认为0表示选择最新的帖子，为1表示选择最热门的帖子
+**`quartz/PostScoreRefreshJob`** `QuartzConfig` `RedisKeyUtil`
+`DiscussPostController发帖加精时计算帖子分数 CommentController添加评论 LikeController  index.html`
+
+#### 7.8生成长图
+- wkhtmltoimage (下载wkhtmltox,并配置环境变量)
+- Runtime.getRuntime().exec()
+`wkProperties WKTests` `WkConfig` `ShareController` `EventConsumer  @KafkaListener(topics = TOPIC_SHARE)`
+
 ```sql
 用户表
 CREATE TABLE `user` (
@@ -323,6 +346,12 @@ CREATE TABLE `message` (
 
 ```
 
+```text
+mysql -u root -p
+show databases;
+user community;
+source C:/Users/26033/Desktop/community-init-sql-1.5/tables_mysql_innodb.sql
+```
 ```text
 reids-server
 redis-cli
@@ -484,6 +513,12 @@ body raw json
 		}
 	}
 }
+```
+
+```text
+>wkhtmltopdf https://www.nowcoder.com f:/data/wk-pdfs/1.pdf
+>wkhtmltoimage https:www.nowcoder.com f:/data/wk-images/1.png
+>wkhtmltoimage --quality 75 https:www.nowcoder.com f:/data/wk-images/2.png
 ```
 
 
