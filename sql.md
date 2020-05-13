@@ -262,8 +262,30 @@
 #### 7.8生成长图
 - wkhtmltoimage (下载wkhtmltox,并配置环境变量)
 - Runtime.getRuntime().exec()
-`wkProperties WKTests` `WkConfig` `ShareController` `EventConsumer  @KafkaListener(topics = TOPIC_SHARE)`
+    `wkProperties WKTests` `WkConfig` `ShareController` `EventConsumer  @KafkaListener(topics = TOPIC_SHARE)`
 
+#### 7.9文件上传至服务器
+- 客户端上传 
+  - 客户端将数据提交给云服务器，并等待其响应  `UserController/upload`
+  - 用户上传头像时，将表单提交给云服务器  `TODO没有实现表单提交`
+- 服务器直传
+  - 应用服务器将数据直接提交给云服务器，并等待其响应  
+  - 分享时，服务端将自动生成的图片，直接提交给云服务器  `ShareController EventConsumer @KafkaListener(topics = TOPIC_SHARE)`
+ `pom aliyun-sdk-oss #AliyunossProperties`  **`AliyunOssUtil`**
+
+#### 7.10优化网站的性能
+- 本地缓存
+  - 将数据缓存在应用的服务器上，性能最好 `DiscussPostService 对不经常更新的数据做本地缓存 如：查询首页最热帖子列表、查询帖子条数`
+  - 常用缓存工具：Caffeine
+- 分布式缓存
+  - 将数据缓存在NoSQL数据库上，跨服务器
+  - 常用缓存工具：MemCache、Redis
+- 多级缓存
+  - 一级缓存（本地缓存） --》 二级缓存（分布式缓存） --》 DB
+  - 避免缓存雪崩（缓存失效，大量请求直达DB），提高系统的可用性
+ `pom caffeine #caffeineProperties  CaffeineTests jmeter测压`
+
+#### 8.1单元测试
 ```sql
 用户表
 CREATE TABLE `user` (

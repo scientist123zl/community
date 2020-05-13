@@ -1,5 +1,11 @@
 package com.nowcoder.community.controller;
 
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.OSSClientBuilder;
+import com.aliyun.oss.common.utils.BinaryUtil;
+import com.aliyun.oss.model.MatchMode;
+import com.aliyun.oss.model.PolicyConditions;
 import com.nowcoder.community.annotation.LoginRequired;
 import com.nowcoder.community.entity.User;
 import com.nowcoder.community.service.FollowService;
@@ -10,7 +16,6 @@ import com.nowcoder.community.util.CommunityConstant;
 import com.nowcoder.community.util.CommunityUtil;
 import com.nowcoder.community.util.HostHolder;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.util.StringMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,16 +29,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Date;
 
-@Controller
+//异步更新用户头像，并上传至oss
 @RequestMapping("/user")
-public class UserController implements CommunityConstant {
+public class UserController1 implements CommunityConstant {
 
-    private static  final Logger logger= LoggerFactory.getLogger(UserController.class);
+    private static  final Logger logger= LoggerFactory.getLogger(UserController1.class);
 
     @Value("${community.path.upload}")
     private String uploadPath;
@@ -56,49 +61,91 @@ public class UserController implements CommunityConstant {
     @Autowired
     private FollowService followService;
 
-    @Autowired
-    private AliyunOssUtil aliyunOssUtil;
+    @Value("${Aliyun.oss.endpoint}")
+    private String endpoint;
+
+    @Value("${Aliyun.oss.accessKeyId}")
+    private String accessKeyId;
+
+    @Value("${Aliyun.oss.accessKeySecret}")
+    private String accessKeySecret;
 
     @Value("${Aliyun.oss.bucket.header.url}")
     private String headerBucketUrl;
 
+    @Autowired
+    private AliyunOssUtil aliyunOssUtil;
+
     @LoginRequired
     @RequestMapping(path = "/setting",method = RequestMethod.GET)
-    public String getSettingPage(){
+    public String getSettingPage(Model model){
+        // 上传文件名称
+        String fileName = CommunityUtil.generateUUID();
+
+        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+
+        Date expiration = new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10);
+        PolicyConditions policyConditions = new PolicyConditions();
+        policyConditions.addConditionItem(PolicyConditions.COND_CONTENT_LENGTH_RANGE, 0, 1048576000);
+        String postPolicy = ossClient.generatePostPolicy(expiration, policyConditions);
+
+        String postSignature = ossClient.calculatePostSignature(postPolicy);
+
+
+
+
+        model.addAttribute("postSignature", postSignature);
+        model.addAttribute("fileName", fileName);
+
+
         return "/site/setting";
     }
 
 
-    @LoginRequired
-    @RequestMapping(path = "/upload", method = RequestMethod.POST)
-    public String uploadHeader(MultipartFile headerImage, Model model){
-        if (headerImage == null) {
-            model.addAttribute("error", "您还没有选择图片!");
-            return "/site/setting";
+//    @LoginRequired
+//    @RequestMapping(path = "/upload", method = RequestMethod.POST)
+//    public String uploadHeader(MultipartFile headerImage, Model model){
+//        if (headerImage == null) {
+//            model.addAttribute("error", "您还没有选择图片!");
+//            return "/site/setting";
+//        }
+//
+//        String filename = headerImage.getOriginalFilename();
+//        String suffix = filename.substring(filename.lastIndexOf("."));
+//        if(StringUtils.isBlank(suffix)){
+//            model.addAttribute("error", "文件的格式不正确!");
+//            return "/site/setting";
+//        }
+//
+//        //生成随机文件名（多人传文件，若文件名相同会发送覆盖）
+//        filename = CommunityUtil.generateUUID()+suffix;
+//
+//        try {
+//            aliyunOssUtil.uploadHeaderImage(headerImage.getInputStream(),filename);
+//        } catch (IOException e) {
+//            logger.error("上传文件失败: " + e.getMessage());
+//            throw new RuntimeException("上传文件失败,服务器发生异常!", e);
+//        }
+//
+//        String headerUrl =headerBucketUrl + "/" + filename;
+//        userService.updateHeader(hostHolder.getUser().getId(), headerUrl);
+//
+//        return "redirect:/index";
+//
+//    }
+
+    // 更新头像路径
+    @RequestMapping(path = "/header/url", method = RequestMethod.POST)
+    @ResponseBody
+    public String updateHeaderUrl(String fileName) {
+        if (StringUtils.isBlank(fileName)) {
+            return CommunityUtil.getJSONString(1, "文件名不能为空!");
         }
 
-        String filename = headerImage.getOriginalFilename();
-        String suffix = filename.substring(filename.lastIndexOf("."));
-        if(StringUtils.isBlank(suffix)){
-            model.addAttribute("error", "文件的格式不正确!");
-            return "/site/setting";
-        }
+        String url = headerBucketUrl + "/" + fileName;
+        userService.updateHeader(hostHolder.getUser().getId(), url);
 
-        //生成随机文件名（多人传文件，若文件名相同会发送覆盖）
-        filename = CommunityUtil.generateUUID()+suffix;
-
-        try {
-            aliyunOssUtil.uploadHeaderImage(headerImage.getInputStream(),filename);
-        } catch (IOException e) {
-            logger.error("上传文件失败: " + e.getMessage());
-            throw new RuntimeException("上传文件失败,服务器发生异常!", e);
-        }
-
-        String headerUrl =headerBucketUrl + "/" + filename;
-        userService.updateHeader(hostHolder.getUser().getId(), headerUrl);
-
-        return "redirect:/index";
-
+        return CommunityUtil.getJSONString(0);
     }
 
 

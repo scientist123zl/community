@@ -7,6 +7,7 @@
 - Elasticsearch
 - SpringSecurity
 - Spring Quartz
+- Caffeine
 
 ## 资料
 [Spring 文档](https://spring.io/guides)    
@@ -22,6 +23,7 @@
 [Spring Security教程7.1](http://www.spring4all.com/)
 [Spring Quartz分布式定时任务7.6](http://www.quartz-scheduler.org/)
 [生成长图7.8](https://wkhtmltopdf.org/)
+[本地缓存 Caffeine文档7.10](https://github.com/ben-manes/caffeine/wiki)
 
 
 
