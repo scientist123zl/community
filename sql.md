@@ -286,6 +286,16 @@
  `pom caffeine #caffeineProperties  CaffeineTests jmeter测压`
 
 #### 8.1单元测试
+- spring-boot-starter-test        `SpringBootTests`
+- 要求：保证测试方法的独立性(每个测试方法执行前初始化，执行后销毁数据)
+- 步骤：初始化数据、执行测试代码、验证测试结果、清理测试数据
+- 常用注解： @BeforeClass、@AfterClass、@Before、@After
+
+#### 8.2项目监控
+- `pom spring-boot-starter-actuator`
+- Endpoints:监控应用的入口，springboot内置了很多端点，页支持自定义端点。 `actuator/DatabaseEndPoint`
+- 访问路径 例如"localhost:8080/community/actuator/health http://39.105.191.47/actuator/database
+- 注意事项，按需配置暴露的端点，并对所有端点进行权限控制 `SecurityConfig /actuator/**(AUTHORITY_ADMIN)`
 ```sql
 用户表
 CREATE TABLE `user` (
